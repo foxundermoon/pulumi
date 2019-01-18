@@ -1,5 +1,7 @@
 ## 0.16.12 (Unreleased)
 
+- Stack names are now scoped within the context of a project, so you may duplicate stack names across different projects.
+
 ### Improvements
 
 ## 0.16.11 (Released January 16th, 2019)
