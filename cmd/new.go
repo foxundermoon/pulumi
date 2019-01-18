@@ -408,10 +408,8 @@ func promptAndCreateStack(
 		return s, nil
 	}
 
-	defaultValue := getDevStackName(projectName)
-
 	for {
-		stackName, err := promptForValue(yes, "stack name", defaultValue, false, workspace.ValidateStackName, opts)
+		stackName, err := promptForValue(yes, "stack name", "dev", false, workspace.ValidateStackName, opts)
 		if err != nil {
 			return nil, err
 		}
@@ -426,14 +424,6 @@ func promptAndCreateStack(
 		}
 		return s, nil
 	}
-}
-
-// getDevStackName returns the stack name suffixed with -dev.
-func getDevStackName(name string) string {
-	const suffix = "-dev"
-	// Strip the suffix so we don't include two -dev suffixes
-	// if the name already has it.
-	return strings.TrimSuffix(name, suffix) + suffix
 }
 
 // stackInit creates the stack.
