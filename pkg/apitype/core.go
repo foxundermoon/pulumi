@@ -234,20 +234,15 @@ type ResourceV2 struct {
 	Provider string `json:"provider,omitempty" yaml:"provider,omitempty"`
 }
 
-// ResourceV3 is the second version of the Resource API type. It absorbs a few breaking changes:
-//   1. The deprecated `Defaults` field is removed because it is not used anywhere,
-//   2. It adds an additional bool field, "External", which reflects whether or not this resource
-//      exists because of a call to `ReadResource`. This is motivated by a need to store
-//      resources that Pulumi does not own in the deployment.
-//   3. It adds an additional string field, "Provider", that is a reference to a first-class provider
-//      associated with this resource.
+// ResourceV3 is the third version of the Resource API type. It absorbs a few breaking changes:
+//   1. It adds a map from input property names to the dependencies that affect that input property. This is used to
+//      improve the precision of delete-before-create operations.
+//   2. It adds a new boolean field, `PendingReplacement`, that marks resources that have been deleted as part of a
+//      delete-before-create operation but have not yet been recreated.
 //
 // Migrating from ResourceV2 to ResourceV3 involves:
-//  1. Dropping the `Defaults` field (it should be empty anyway)
-//  2. Setting the `External` field to "false", since a ResourceV1 existing for a resource
-//     implies that it is owned by Pulumi. Note that since this is the default value for
-//     booleans in Go, no explicit assignment needs to be made.
-//  3. Setting the "Provider" field to the empty string, because V1 deployments don't have first-class providers.
+//   1. Populating the map from input property names to dependencies by assuming that every dependency listed in
+//      `Dependencies` affects every input property.
 type ResourceV3 struct {
 	// URN uniquely identifying this resource.
 	URN resource.URN `json:"urn" yaml:"urn"`
@@ -277,7 +272,10 @@ type ResourceV3 struct {
 	// Provider is a reference to the provider that is associated with this resource.
 	Provider string `json:"provider,omitempty" yaml:"provider,omitempty"`
 	// PropertyDependencies maps from an input property name to the set of resources that property depends on.
-	PropertyDependencies map[resource.PropertyKey][]resource.URN `json:"property_dependencies,omitempty" yaml:"property_dependencies,omitempty"`
+	PropertyDependencies map[resource.PropertyKey][]resource.URN `json:"propertyDependencies,omitempty" yaml:"property_dependencies,omitempty"`
+	// PendingReplacement is used to track delete-before-replace resources that have been deleted but not yet
+	// recreated.
+	PendingReplacement bool `json:"pendingReplacement,omitempty" yaml:"pendingReplacement,omitempty"`
 }
 
 // ManifestV1 captures meta-information about this checkpoint file, such as versions of binaries, etc.
