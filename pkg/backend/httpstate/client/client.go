@@ -473,7 +473,7 @@ func (pc *Client) PatchUpdateCheckpoint(ctx context.Context, update UpdateIdenti
 	}
 
 	req := apitype.PatchUpdateCheckpointRequest{
-		Version:    3,
+		Version:    2,
 		Deployment: rawDeployment,
 	}
 

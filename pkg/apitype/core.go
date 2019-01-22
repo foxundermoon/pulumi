@@ -41,7 +41,7 @@ import (
 const (
 	// DeploymentSchemaVersionCurrent is the current version of the `Deployment` schema.
 	// Any deployments newer than this version will be rejected.
-	DeploymentSchemaVersionCurrent = 3
+	DeploymentSchemaVersionCurrent = 2
 )
 
 // VersionedCheckpoint is a version number plus a json document. The version number describes what

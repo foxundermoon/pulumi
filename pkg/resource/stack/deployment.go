@@ -110,11 +110,11 @@ func DeserializeUntypedDeployment(deployment *apitype.UntypedDeployment) (*deplo
 		v2deployment := migrate.UpToDeploymentV2(v1deployment)
 		v3deployment = migrate.UpToDeploymentV3(v2deployment)
 	case 2:
-		var v2deployment apitype.DeploymentV2
-		if err := json.Unmarshal([]byte(deployment.Deployment), &v2deployment); err != nil {
+		//var v2deployment apitype.DeploymentV2
+		if err := json.Unmarshal([]byte(deployment.Deployment), &v3deployment); err != nil {
 			return nil, err
 		}
-		v3deployment = migrate.UpToDeploymentV3(v2deployment)
+		//v3deployment = migrate.UpToDeploymentV3(v2deployment)
 	case 3:
 		if err := json.Unmarshal([]byte(deployment.Deployment), &v3deployment); err != nil {
 			return nil, err
@@ -269,6 +269,13 @@ func DeserializeResource(res apitype.ResourceV3) (*resource.State, error) {
 	outputs, err := DeserializeProperties(res.Outputs)
 	if err != nil {
 		return nil, err
+	}
+
+	if res.PropertyDependencies == nil {
+		res.PropertyDependencies = make(map[resource.PropertyKey][]resource.URN)
+		for pk := range res.Inputs {
+			res.PropertyDependencies[resource.PropertyKey(pk)] = res.Dependencies
+		}
 	}
 
 	return resource.NewState(
