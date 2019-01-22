@@ -109,7 +109,7 @@ type DeploymentV3 struct {
 	// Manifest contains metadata about this deployment.
 	Manifest ManifestV1 `json:"manifest" yaml:"manifest"`
 	// SecretsProviders is a placeholder for secret provider configuration.
-	SecretsProviders interface{} `json:"secrets_providers,omitempty" yaml:"secrets_providers,empty"`
+	SecretsProviders interface{} `json:"secrets_providers,omitempty" yaml:"secrets_providers,omitempty"`
 	// Resources contains all resources that are currently part of this stack after this deployment has finished.
 	Resources []ResourceV3 `json:"resources,omitempty" yaml:"resources,omitempty"`
 	// PendingOperations are all operations that were known by the engine to be currently executing.
